@@ -1,0 +1,19 @@
+[package]
+name = "kernel"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+arrayvec = { version = "0.7.6", default-features = false }
+cfg-if = "1.0.1"
+limine = { version = "0.5.0", optional = true }
+log = "0.4.27"
+
+[features]
+limine = ["dep:limine"]
+
+[[bin]]
+name = "limine"
+path = "src/bootloader/limine/main.rs"
+required-features = ["limine"]

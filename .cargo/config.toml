@@ -1,0 +1,9 @@
+[build]
+target = "configure/target.json"
+
+[target."target"]
+rustflags = ['-Clink-args=-Tconfigure/linker.ld']
+
+[unstable]
+build-std = ["core", "compiler_builtins", "alloc"]
+build-std-features = ["compiler-builtins-mem"]
