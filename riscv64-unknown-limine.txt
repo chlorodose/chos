@@ -1,0 +1,11 @@
+[binaries]
+rust = 'rustc'
+
+[host_machine]
+system = 'limine'
+cpu_family = 'riscv64'
+cpu = 'riscv64gc'
+endian = 'little'
+
+[properties]
+rust_stdlib = 'std'

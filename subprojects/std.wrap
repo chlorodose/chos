@@ -1,0 +1,6 @@
+[wrap-git]
+url = https://github.com/rust-lang/rust.git
+revision = e43d139a82620a268d3828a73e12a8679339e8f8
+depth = 1
+clone-recursive = false
+diff_files = std/1.patch

@@ -1,0 +1,71 @@
+diff --git a/meson.build b/meson.build
+new file mode 100644
+index 00000000..41f5ca5c
+--- /dev/null
++++ b/meson.build
+@@ -0,0 +1,64 @@
++project('std', 'rust', meson_version: '1.8.0')
++
++buildtype_map = {
++    'plain': 'dev',
++    'debug': 'dev',
++    'debugoptimized': 'devopt',
++    'release': 'release',
++    'minsize': 'minsize',
++}
++
++buildtype = buildtype_map.get(get_option('buildtype'))
++
++rust_target = meson.global_source_root() / 'arch' / (host_machine.cpu_family() + '.json')
++
++cargo_args = [
++    'build',
++    '--color', 'always',
++    '--manifest-path', '@INPUT@',
++    '--target', rust_target,
++    '-Z', 'unstable-options',
++    '--artifact-dir', '@OUTDIR@',
++    '--profile', buildtype,
++]
++
++libcore = custom_target(
++    'core',
++    build_always_stale: true,
++    input: 'library/Cargo.toml',
++    output: 'libcore.rlib',
++    command: ['cargo'] + cargo_args + ['--package', 'core'],
++)
++
++libcompiler_builtins = custom_target(
++    'compiler_builtins',
++    build_always_stale: true,
++    input: 'library/Cargo.toml',
++    output: 'libcompiler_builtins.rlib',
++    command: ['cargo']
++    + cargo_args
++    + ['--features', 'rustc-dep-of-std']
++    + ['--package', 'compiler_builtins'],
++)
++
++liballoc = custom_target(
++    'alloc',
++    build_always_stale: true,
++    input: 'library/Cargo.toml',
++    output: 'liballoc.rlib',
++    command: ['cargo'] + cargo_args + ['--package', 'alloc'],
++)
++
++libcore_dep = declare_dependency(link_with: static_library('core', libcore, link_language: 'rust'))
++meson.override_dependency('core', libcore_dep, static: true)
++
++libcompiler_builtins_dep = declare_dependency(
++    link_with: static_library('compiler_builtins', libcompiler_builtins, link_language: 'rust'),
++)
++meson.override_dependency('compiler_builtin', libcore_dep, static: true)
++
++liballoc_dep = declare_dependency(link_with: static_library('alloc', liballoc, link_language: 'rust'))
++meson.override_dependency('alloc', liballoc_dep, static: true)
++
++libstd_dep = declare_dependency(dependencies: [libcore_dep, libcompiler_builtins_dep, liballoc_dep])
++meson.override_dependency('rust_stdlib', libstd_dep)
+\ No newline at end of file
