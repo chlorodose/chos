@@ -1,0 +1,5 @@
+[package]
+name = "arch"
+edition = "2024"
+
+[dependencies]

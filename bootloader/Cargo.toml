@@ -1,0 +1,6 @@
+[package]
+name = "bootloader"
+edition = "2024"
+
+[dependencies]
+kernel = { path = ".." }

@@ -1,0 +1,6 @@
+[build]
+target = "configure/target.json"
+rustflags = ['-Clink-args=-Tconfigure/linker.ld']
+
+[unstable]
+build-std = ["core", "alloc"]
